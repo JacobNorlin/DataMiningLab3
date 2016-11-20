@@ -1,7 +1,6 @@
 package utils
 
 import scala.util.Random
-import scalax.collection.GraphEdge.UnDiEdge
 
 /**
   * Created by Jacob on 17-Nov-16.
