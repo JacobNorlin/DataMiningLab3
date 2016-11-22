@@ -9,24 +9,39 @@ import scala.io.Source
 object Main {
 
   def main(args: Array[String]): Unit = {
-//    System.setProperty("hadoop.home.dir", "C:\\Users\\Jacob\\Programmering\\lib\\hadoop-2.7.1")
-//    val conf = new SparkConf()
-//      .setAppName("Simple Application")
-//      .setMaster(("local"))
-//    val sc = new SparkContext(conf)
-//    val file = sc.textFile("./data")
-    val file = Source.fromFile("./data/out.moreno_names_names").getLines()
+
+    var arglist = args.toList
+    type OptionMap = Map[Symbol, Any]
+
+    def nextOption(map: OptionMap, list: List[String]): OptionMap = {
+      list match {
+        case Nil => map
+        case "-fp" :: value :: tail => nextOption(map ++ Map('file_path -> value.toString), tail)
+        case "-m" :: value :: tail => nextOption(map ++ Map('M -> value.toInt), tail)
+        case "-alg" :: value :: tail => nextOption(map ++ Map('alg -> value.toString), tail)
+        case option :: tail => println("unknown parameter")
+                              sys.exit(1)
+      }
+    }
+
+    val options = nextOption(Map(), arglist)
+    val filePath: String = options.getOrElse('file_path, "").toString
+    val file = Source.fromFile(filePath).getLines()
     val graphData = file.map(l => {
       val nodes = l.split(" ")
       EdgeChange(1, Edge(nodes(0).toInt, nodes(1).toInt))
     })
 
-    val M = 3000
+    val M = Integer.parseInt(options.getOrElse('M, 8000).toString)
 
-    //runTriestBase(M, graphData)
-    //runTriestFD(M, graphData)
-    runTriestImpr(M, graphData)
+    val alg = options.getOrElse('alg, "base")
 
+    alg match{
+      case "base" => runTriestBase(M, graphData)
+      case "impr" => runTriestImpr(M, graphData)
+      case "fd" => runTriestFD(M, graphData)
+      case _ => println("Algorithm not found")
+    }
 
   }
 

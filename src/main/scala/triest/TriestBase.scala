@@ -26,7 +26,7 @@ class TriestBase(M: Int) extends Triest(M){
   }
 
   def sampleEdge(e: Edge): Boolean = {
-    if(t <= M){
+    if(t < = M){
       true
     }else if(flipBiasedCoin(M.toFloat / t.toFloat)){
       val randomEdge = edgeSample.getRandomEdge()
