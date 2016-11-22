@@ -9,8 +9,8 @@ import scala.util.Random
   */
 abstract class Triest(val   M: Int,
                       val edgeSample: EdgeSample = new EdgeSample(),
-                      var globalCounter: Int = 0,
-                      var localCounters: Map[Int, Int] = Map(),
+                      var globalCounter: Double = 0,
+                      var localCounters: Map[Int, Double] = Map(),
                       var t: Int = 0
                       ) {
 
@@ -23,13 +23,16 @@ abstract class Triest(val   M: Int,
   def updateCounters(edgeChange: EdgeChange) = {
     val u = edgeChange.e.u
     val v = edgeChange.e.v
-    val change = edgeChange.v
+    val change = edgeChange.v.toDouble
     val Nu_v = edgeSample.neighbourHood(u) intersect edgeSample.neighbourHood(v)
     Nu_v.foreach(n => {
       globalCounter += change
-      localCounters = localCounters.updated(n, localCounters.getOrElse(n, 0) + change)
-      localCounters = localCounters.updated(u, localCounters.getOrElse(u, 0) + change)
-      localCounters = localCounters.updated(v, localCounters.getOrElse(v, 0) + change)
+      val cCounter: Double = localCounters.getOrElse(n, 0)
+      val uCounter: Double = localCounters.getOrElse(u, 0)
+      val vCounter: Double = localCounters.getOrElse(v, 0)
+      localCounters = localCounters.updated(n, cCounter + change)
+      localCounters = localCounters.updated(u, uCounter + change)
+      localCounters = localCounters.updated(v, vCounter + change)
 
     })
 

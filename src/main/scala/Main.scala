@@ -1,7 +1,5 @@
-import triest.{Triest, TriestBase, TriestFD}
+import triest.{Triest, TriestBase, TriestFD, TriestImpr}
 import utils.{Edge, EdgeChange}
-
-
 
 import scala.io.Source
 
@@ -23,12 +21,19 @@ object Main {
       EdgeChange(1, Edge(nodes(0).toInt, nodes(1).toInt))
     })
 
-    val M = 100000
+    val M = 3000
 
     //runTriestBase(M, graphData)
-    runTriestFD(M, graphData)
+    //runTriestFD(M, graphData)
+    runTriestImpr(M, graphData)
 
 
+  }
+
+  def runTriestImpr(M: Int, graphData: Iterator[EdgeChange]) = {
+    val triestImpr = new TriestImpr(M)
+    graphData.foreach(ec => triestImpr.runEdge(ec.e))
+    println(triestImpr.estimateGlobalCount())
   }
 
   def runTriestBase(M: Int, graphData: Iterator[EdgeChange]): Unit ={

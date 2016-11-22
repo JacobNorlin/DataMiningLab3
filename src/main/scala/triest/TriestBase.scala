@@ -16,11 +16,11 @@ class TriestBase(M: Int) extends Triest(M){
       }
   }
 
-  def estimateGlobalCount(): Float ={
+  def estimateGlobalCount(): Double ={
     globalCounter*epsilon()
   }
 
-  def epsilon(): Float = {
+  def epsilon(): Double = {
     val sampleSize = edgeSample.edges.size
     Math.max(1, (t*t-1*t-2)/(sampleSize*sampleSize-1*sampleSize-2))
   }
